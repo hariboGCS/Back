@@ -1,1 +1,0 @@
-# GCS BackEnd With Go
