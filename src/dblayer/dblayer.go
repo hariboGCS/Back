@@ -5,6 +5,6 @@ import (
 )
 
 type DBLayer interface {
-	GetScore(model.Student) model.Score
-	GetRanking(model.Student) model.Score
+	GetScore(model.User)
+	GetRanking(model.User)
 }

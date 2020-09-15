@@ -11,10 +11,14 @@ import (
 func RunAPI(address string) error {
 	mux := pat.New()
 	h, _ := NewHandler()
-	mux.Get("/", h.GetMainPage)
-	mux.Get("/signin", h.SignIn)
-
 	nh := negroni.Classic()
+
 	nh.UseHandler(mux)
+
+	mux.Get("/", h.GetMainPage)
+	mux.Post("/signup", h.SignUp)
+	mux.Get("/signin", h.SignIn)
+	mux.Get("/signout", h.SignOut)
+	mux.Get("/standard", h.GetStandard)
 	return http.ListenAndServe(address, nh)
 }
