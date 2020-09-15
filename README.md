@@ -4,4 +4,4 @@
 ## 2. Go compile
     In Terminal
         cd src
-        go run
+        go run main.go
