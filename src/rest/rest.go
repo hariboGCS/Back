@@ -19,6 +19,7 @@ func RunAPI(address string) error {
 	mux.Post("/signin", h.SignIn)
 	mux.Post("/signout", h.SignOut)
 	mux.Get("/profile", h.GetProfile)
-	mux.Get("/standard", h.GetStandard)
+	mux.Post("/score", h.ReceiveScore)
+	mux.Get("/score", h.GetScore)
 	return http.ListenAndServe(address, nh)
 }
