@@ -1,25 +1,20 @@
 package rest
 
 import (
-	"net/http"
-
-	"github.com/gorilla/pat"
-
-	"github.com/urfave/negroni"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
-func RunAPI(address string) error {
-	mux := pat.New()
-	h, _ := NewHandler()
-	nh := negroni.Classic()
+//RunAPI used in main.go
+func RunAPI(address string) {
+	e := echo.New()
+	h, _ := newHandler()
 
-	nh.UseHandler(mux)
-	mux.Get("/", h.GetMainPage)
-	mux.Post("/signup", h.SignUp)
-	mux.Post("/signin", h.SignIn)
-	mux.Post("/signout", h.SignOut)
-	mux.Get("/profile", h.GetProfile)
-	mux.Post("/score", h.ReceiveScore)
-	mux.Get("/score", h.GetScore)
-	return http.ListenAndServe(address, nh)
+	e.Use(middleware.Logger())
+	e.POST("/signup", h.Signup)
+	e.POST("/signin", h.Signin)
+	e.PUT("/users/:id", h.updateUser)
+	e.DELETE("/users/:id", h.deleteUser)
+
+	e.Logger.Fatal(e.Start(address))
 }

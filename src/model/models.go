@@ -1,8 +1,8 @@
 package model
 
-var authority bool
-
+//User struct
 type User struct {
+	ID         string `json:"id"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
 	Password   string `json:"password"`
@@ -11,6 +11,7 @@ type User struct {
 	Token      string `json:"token"`
 }
 
+//Score struct for User
 type Score struct {
 	Email  string `json:"email"`
 	Kind   int    `json:"kind"`
@@ -18,6 +19,7 @@ type Score struct {
 	Score  int    `json:"score"`
 }
 
+//ResponseResult Mongo db connect
 type ResponseResult struct {
 	Error  string `json:"error"`
 	Result string `json:"result"`
