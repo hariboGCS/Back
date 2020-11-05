@@ -89,7 +89,7 @@ func (h *handler) Signin(c echo.Context) (err error) {
 		return err
 	}
 
-	u.Password = "" // Don't send password
+	u.Password = "1" // Don't send password
 	return c.JSON(http.StatusOK, u)
 }
 
