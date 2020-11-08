@@ -18,9 +18,3 @@ type Score struct {
 	Detail string `json:"detail"`
 	Score  int    `json:"score"`
 }
-
-//ResponseResult Mongo db connect
-type ResponseResult struct {
-	Error  string `json:"error"`
-	Result string `json:"result"`
-}

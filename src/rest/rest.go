@@ -8,13 +8,11 @@ import (
 //RunAPI used in main.go
 func RunAPI(address string) {
 	e := echo.New()
-	h, _ := newHandler()
 
 	e.Use(middleware.Logger())
-	e.POST("/signup", h.Signup)
-	e.POST("/signin", h.Signin)
-	e.PUT("/users/:id", h.updateUser)
-	e.DELETE("/users/:id", h.deleteUser)
+	e.GET("/", GetMainPage) //서버 검사
+	e.POST("/signup", Signup)
+	e.POST("/signin", Signin)
 
 	e.Logger.Fatal(e.Start(address))
 }

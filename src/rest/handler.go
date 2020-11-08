@@ -2,15 +2,14 @@ package rest
 
 import (
 	"context"
+	"log"
 	"net/http"
-	"strconv"
 	"time"
 
-	"github.com/ajtwoddltka/GCS/src/dblayer"
-	"github.com/ajtwoddltka/GCS/src/model"
 	"github.com/dgrijalva/jwt-go"
+	dblayer "github.com/hariboGCS/Back/src/dbconn"
+	"github.com/hariboGCS/Back/src/model"
 	"github.com/labstack/echo"
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -26,25 +25,14 @@ type handlerInterface interface {
 	GetComplaints(c echo.Context)
 }
 
-var (
-	users = map[int]*model.User{}
-	seq   = 1 //id에 들어갈 값
-)
-
-type (
-	handler struct {
-		DB *mgo.Session
-	}
-)
-
-func newHandler() (*handler, error) { //핸들러 init
-	return new(handler), nil
+func GetMainPage(c echo.Context) (err error) {
+	return c.String(200, "main page")
 }
-
-func (h *handler) Signup(c echo.Context) (err error) {
+func Signup(c echo.Context) (err error) {
 	// Bind
 	u := &model.User{ID: bson.NewObjectId().Hex()}
 	if err = c.Bind(u); err != nil {
+		log.Println("1")
 		return err
 	}
 	// Validate
@@ -61,7 +49,7 @@ func (h *handler) Signup(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, u)
 }
 
-func (h *handler) Signin(c echo.Context) (err error) {
+func Signin(c echo.Context) (err error) {
 	// Bind
 	u := new(model.User)
 	if err = c.Bind(u); err != nil {
@@ -69,11 +57,12 @@ func (h *handler) Signin(c echo.Context) (err error) {
 	}
 	filter := bson.M{"username": u.Username, "password": u.Password}
 	collection, err := dblayer.GetDBCollection()
-	err = collection.FindOne(context.TODO(), filter).Decode(&u)
 	if err != nil {
 		return err
 		// return &echo.HTTPError{Code: http.StatusUnauthorized,Message:"invalid email or password"}
 	}
+	err = collection.FindOne(context.TODO(), filter).Decode(&u)
+	_, err = collection.UpdateOne(context.TODO(), filter, &u)
 	defer collection.Database().Client().Disconnect(context.TODO())
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -89,22 +78,6 @@ func (h *handler) Signin(c echo.Context) (err error) {
 		return err
 	}
 
-	u.Password = "1" // Don't send password
+	u.Password = "" // Don't send password
 	return c.JSON(http.StatusOK, u)
-}
-
-func (h *handler) updateUser(c echo.Context) error {
-	u := new(model.User)
-	if err := c.Bind(u); err != nil {
-		return err
-	}
-	id, _ := strconv.Atoi(c.Param("id"))
-	users[id].Username = u.Username
-	return c.JSON(http.StatusOK, users[id])
-}
-
-func (h *handler) deleteUser(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
-	delete(users, id)
-	return c.NoContent(http.StatusNoContent)
 }

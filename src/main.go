@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ajtwoddltka/GCS/src/rest"
+	"github.com/hariboGCS/Back/src/rest"
 )
 
 func main() {
